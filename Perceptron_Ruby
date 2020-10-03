@@ -1,0 +1,206 @@
+  #
+
+ # Classe PERCEPTRON responsável para aprendizado e resolução da tabela AND
+
+ #
+
+
+class Perceptron 
+
+
+  def initialize
+
+    # pesos sinápticos [0] entrada 1, [1] entrada 2, [3]BIAS
+
+    @w   = []
+
+
+    # variável responsável pelo somatório(rede).
+
+    @net = 0
+
+
+    # variavél responsável pelo número máximo de épocas
+
+    @epocasMax = 30
+
+
+    # variável responsável pela contagem das épocas durante o treinamento
+
+    @count      = 0
+
+
+    # declara o vetor da matriz de aprendizado
+
+    @matriz_aprendizado = []
+
+
+    self.inicia_matriz
+
+  end
+
+
+  def inicia_matriz
+
+    # Primeiro valor
+
+    @matriz_aprendizado[0]    = []
+
+    @matriz_aprendizado[0][0] = 0; # entrada 1
+
+    @matriz_aprendizado[0][1] = 0; # entrada 2
+
+    @matriz_aprendizado[0][2] = 0; # valor esperado
+
+
+    # Segundo Valor
+
+    @matriz_aprendizado[1]    = []
+
+    @matriz_aprendizado[1][0] = 0; # entrada 1
+
+    @matriz_aprendizado[1][1] = 1; # entrada 2
+
+    @matriz_aprendizado[1][2] = 0; # valor esperado
+
+
+    # terceiro valor
+
+    @matriz_aprendizado[2]    = []
+
+    @matriz_aprendizado[2][0] = 1; # entrada 1
+
+    @matriz_aprendizado[2][1] = 0; # entrada 2
+
+    @matriz_aprendizado[2][2] = 0; # valor esperado
+
+
+    # quarto valor
+
+    @matriz_aprendizado[3]    = []
+
+    @matriz_aprendizado[3][0] = 1; # entrada 1
+
+    @matriz_aprendizado[3][1] = 1; # entrada 2
+
+    @matriz_aprendizado[3][2] = 1; # valor esperado
+
+    
+
+    # inicialização dos pesos sinápticos
+
+
+    # Peso sináptico para primeira entrada.
+
+    @w[0] = 0;
+
+    # Peso sináptico para segunda entrada.
+
+    @w[1] = 0;
+
+    # Peso sináptico para o BIAS
+
+    @w[2] = 0;
+
+  end
+
+
+  # Método responsávelpelo somatório e a função de ativação.
+
+  def executar(x1, x2)
+
+    # Somatório (NET)
+
+    @net = (x1 * @w[0]) + (x2 * @w[1]) + ((-1) * @w[2]);
+
+
+    # Função de Ativação
+
+    return 1 if (@net >= 0) 
+
+
+    return 0;
+
+  end
+
+
+  # Método para treinamento da rede
+
+  def treinar() 
+
+    # variavel utilizada responsável pelo controlede treinamento recebefalso
+
+    treinou = true;
+
+    
+
+    # varável responsável para receber o valor da saída (y)
+
+    saida   = nil;
+
+
+    # laço usado para fazer todas as entradas
+
+    @matriz_aprendizado.length.times do |i|
+
+      
+
+      # A saída recebe o resultado da rede que no caso é 1 ou 0
+
+      saida = self.executar(@matriz_aprendizado[i][0], @matriz_aprendizado[i][1]);
+
+     
+
+      if (saida != @matriz_aprendizado[i][2]) 
+
+        # Caso a saída seja diferente do valor esperado
+
+        
+
+        # os pesos sinápticos serão corrigidos
+
+        self.corrigirPeso(i, saida);
+
+
+        # a variavél responsável pelo controlede treinamento recebe falso
+
+        treinou = false;
+
+      end
+
+    end
+
+
+    # acrescenta uma época
+
+    @count+=1;
+
+
+    # teste se houve algum erro duranteo treinamento e o número de epocas
+
+    #é menor qe o definido
+
+    if(not treinou and (@count < @epocasMax))
+
+      # chamada recursiva do método
+
+      self.treinar();
+
+    end
+
+  end    # fim do método para treinamento
+
+
+  # Método para a correção de pesos
+
+  def corrigirPeso(i, saida) 
+
+    @w[0] = @w[0] + (1 * (@matriz_aprendizado[i][2] - saida) * @matriz_aprendizado[i][0]);
+
+    @w[1] = @w[1] + (1 * (@matriz_aprendizado[i][2] - saida) * @matriz_aprendizado[i][1]);
+
+    @w[2] = @w[2] + (1 * (@matriz_aprendizado[i][2] - saida) * (-1));
+
+  end
+
+end
